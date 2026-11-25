@@ -11,6 +11,11 @@ public class CameraFollow2D : MonoBehaviour
 
     private Vector3 currentVelocity;
 
+    private void Start()
+    {
+        SnapToTarget();
+    }
+
     private void LateUpdate()
     {
         if (target == null)
@@ -18,6 +23,22 @@ public class CameraFollow2D : MonoBehaviour
             return;
         }
 
+        transform.position = Vector3.SmoothDamp(transform.position, GetDesiredPosition(), ref currentVelocity, smoothTime);
+    }
+
+    public void SnapToTarget()
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        transform.position = GetDesiredPosition();
+        currentVelocity = Vector3.zero;
+    }
+
+    private Vector3 GetDesiredPosition()
+    {
         Vector3 desired = target.position + offset;
 
         if (useBounds)
@@ -27,6 +48,6 @@ public class CameraFollow2D : MonoBehaviour
         }
 
         desired.z = offset.z;
-        transform.position = Vector3.SmoothDamp(transform.position, desired, ref currentVelocity, smoothTime);
+        return desired;
     }
 }
